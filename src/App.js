@@ -1,23 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+
+import Countries from './components/Countries';
 
 function App() {
+  const [countries, setCountries] = useState([]);
+  const [query, setQuery] = useState('');
+
+  useEffect(() => {
+    const request = axios.get('https://restcountries.com/v3.1/all');
+    request.then(response => setCountries(response.data));
+  }, []);
+
+  function handleQueryChange(e) {
+    setQuery(e.target.value);
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      Find countries: <input value={query} onChange={handleQueryChange} />
+      <Countries
+        query={query}
+        countries={countries}
+        handleQueryChange={handleQueryChange}
+      />
     </div>
   );
 }
